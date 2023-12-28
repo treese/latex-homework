@@ -4,6 +4,13 @@
 %
 % The most recent version can be found here:
 % https://github.com/artemmavrin/latex-homework/blob/master/homework.cls
+
+% Modifications by Win Treese
+% Most recent version of modified version can be found at
+% https://github.com/treese/latex-homework.git
+%
+% Added the filesolution environment for use with including a file.
+
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{homework}[2017/11/09 LaTeX class for typesetting homework]
 
