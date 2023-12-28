@@ -53,13 +53,14 @@
 
 % Internal names for homework details
 
-% The internal student name, course name, term, and HW number macros have no
+% The internal student name, course name, term, short title, and HW number macros have no
 % default value and will raise an error if used before being set by their
 % corresponding defining macros.
 \def\@name{\@latex@error{No \noexpand\name given}\@ehc}
 \def\@course{\@latex@error{No \noexpand\course given}\@ehc}
 \def\@term{\@latex@error{No \noexpand\term given}\@ehc}
 \def\@hwnum{\@latex@error{No \noexpand\hwnum given}\@ehc}
+\def\@shorttitle{\@latex@error{No \noexpand\shorttitle given}\@ehc}
 % The following internal homework detail macros have default values and do not
 % have to be specified manually.
 \def\@hwname{Homework}
@@ -69,6 +70,8 @@
 % homework number, and cannot be changed by the user (without redefining
 % \@hwtitle).
 \def\@hwtitle{\@course\ \@hwname\ \@hwnum}
+% Likewise the short title, used For running headings
+\def\@runningtitle{\@shorttitle\ \@hwnum}
 
 % The following macros let the user specify the values of the internal homework
 % detail macros defined above.
@@ -78,6 +81,7 @@
 \def\course#1{\renewcommand\@course{#1}}
 \def\term#1{\renewcommand\@term{#1}}
 \def\hwnum#1{\renewcommand\@hwnum{#1}}
+\def\shorttitle#1{\renewcommand\@shorttitle{#1}}
 % The following just redefine default values and are therefore optional
 \def\hwname#1{\renewcommand\@hwname{#1}}
 \def\solutionname#1{\renewcommand\@solutionname{#1}}
@@ -102,8 +106,8 @@
 \fancypagestyle{runningpage}
 {
   \fancyhf{}
-  \fancyhead[L]{\small\@hwtitle}
-  \fancyhead[R]{\small\@name}
+  \fancyhead[L]{\small\@runningtitle}
+  \fancyhead[R]{\small\@term}
   \fancyfoot[C]{\small\thepage}
 }
 \pagestyle{runningpage}
@@ -117,9 +121,17 @@
   \sffamily\bfseries\Large\@hwtitle
   \endcenter
   \endgroup
-}
+  \begingroup
+  \center
+  \@date
+  \endcenter
+  \endgroup
+  }
+
+%% WT Change: since I'm using Org export to LaTeX, which automatically
+%% adds the \maketitle, adding it here is disabled.
 % The title is printed automatically, no need to type \maketitle manually
-\AtBeginDocument{\maketitle}
+%\AtBeginDocument{\maketitle}
 
 
 %%%%%%%%%%%%%%%%%
@@ -259,6 +271,27 @@
       \popQED
     \fi
     \endtrivlist\@endpefalse
+  }
+\fi
+
+% Fileolution environment for including answer from a file.
+\ifHW@hidesolutions
+  % Hide solutions if the `hidesolutions' class option is enabled
+  \RequirePackage{comment}
+  \excludecomment{filesolution}
+\else
+  % This is a modification of the `proof' environment from the amsthm package
+  \newenvironment{filesolution}[1][\@solutionname]
+  {
+    \par
+    \normalfont \topsep6\p@\@plus6\p@\relax
+    \trivlist
+    \item[\hskip\labelsep
+      \sffamily\bfseries#1\@addpunct{:}]\ignorespaces
+    \endtrivlist\@endpefalse
+  }
+  {
+
   }
 \fi
 

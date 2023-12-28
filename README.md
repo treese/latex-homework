@@ -4,6 +4,8 @@ Provides the LaTeX class [homework.cls](homework.cls) for typesetting homework
 in a straightforward problem-solution format.
 Designed to avoid [this mistake](http://tex.stackexchange.com/a/139878/23505).
 
+This version is slightly modified from the original version by Artem Mavrin.
+
 Read on for a description of the `homework` class.
 
 ----
@@ -28,7 +30,7 @@ Read on for a description of the `homework` class.
 
 * Simple interface for specifying homework information (e.g., name and course).
 * Environments for writing problem statements, problem parts, and solutions.
-* Automatic title creation.
+* Automatic title creation (but, unlike the original, it is necessary to include `\maketitle` after `\begin{document}`.
 * Compatible with `article` class options.
 * Loads the AMS math packages.
 * Automatic PDF author/title/bookmark metadata creation.
@@ -73,6 +75,10 @@ If these are not used, you will get an error.
   Replace `<term>` with the term when the course is held.
 * `\hwnum{<number>}`:
   Replace `<number>` with the number of the homework.
+* `\shorttitle{<short-title>}`:
+  Replace `<short-title>` with the running title for pages after the first one. The homework number is automatically appended to the short title.
+
+The value of `\date` is printed with the title as in the article class. It can be set to a string like "Due on Friday".
 
 Thus, at a *minimum*, your preamble must contain
 
@@ -83,6 +89,7 @@ Thus, at a *minimum*, your preamble must contain
 \course{<course>}
 \term{<term>}
 \hwnum{<hwnum>}
+\shorttitle{<short-title>}
 ```
 
 You can also change the default text of various labels that appear on the
