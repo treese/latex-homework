@@ -9,7 +9,8 @@
 % Most recent version of modified version can be found at
 % https://github.com/treese/latex-homework.git
 %
-% Added the filesolution environment for use with including a file.
+% - Added the filesolution environment for use with including a file.
+% - Added program evironment To mix separately number programming assignments in With questions.
 
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{homework}[2017/11/09 LaTeX class for typesetting homework]
@@ -66,6 +67,8 @@
 \def\@hwname{Homework}
 \def\@problemname{Problem}
 \def\@solutionname{Solution}
+\def\@programname{Program}
+
 % The homework title is determined by the course name, homework name, and
 % homework number, and cannot be changed by the user (without redefining
 % \@hwtitle).
@@ -86,6 +89,7 @@
 \def\hwname#1{\renewcommand\@hwname{#1}}
 \def\solutionname#1{\renewcommand\@solutionname{#1}}
 \def\problemname#1{\renewcommand\@problemname{#1}}
+\def\programname#1{\renewcommand\@programname{#1}}
 
 
 %%%%%%%%%%%%%%%%%%%
@@ -329,3 +333,41 @@
 \NoIndentAfterEnv{corollary}
 \NoIndentAfterEnv{remark}
 \NoIndentAfterEnv{proof}
+
+%%% Extensions For programming assignments
+
+% Program environment
+\ifHW@boxes
+\RequirePackage{framed}
+\fi
+\theoremstyle{definition}
+\newtheorem{@program}{\sffamily\@programname}
+\numberwithin{equation}{@program}
+\numberwithin{table}{@program}
+\numberwithin{figure}{@program}
+\newenvironment{program}[1][]
+{
+\ifHW@boxes
+\framed
+\vspace{-1.5ex}
+\fi
+\def\@arg{#1}
+\ifx\@arg\empty
+\@program
+\else
+\@program[\normalfont\@arg\sffamily]
+\fi
+\pdfbookmark{\@programname\ \arabic{@program}}{\arabic{@program}}
+}
+{
+\end@program
+\ifHW@boxes
+\vspace{-1.5ex}
+\endframed
+\fi
+}
+
+% Programs are numbered 1, 2, 3, ... by default
+% If a custom program number is desired for a particular program, use the
+% following macro before the program.
+\def\programnumber#1{\setcounter{@program}{#1}\addtocounter{@program}{-1}}
