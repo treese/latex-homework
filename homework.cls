@@ -9,6 +9,8 @@
 % Most recent version of modified version can be found at
 % https://github.com/treese/latex-homework.git
 %
+% - Change Name of problem/solution To question/answer To make my assignment setup
+%   more readable
 % - Added the filesolution environment for use with including a file.
 % - Added program evironment To mix separately number programming assignments in With questions.
 
@@ -38,7 +40,7 @@
 % True/False options. Defaults are False
 \DeclareBoolOption{qed}             % End solutions with a QED tombstone symbol
 \DeclareBoolOption{hidesolutions}   % Do not display solutions
-\DeclareBoolOption{boxes}           % Wrap problems in boxes
+\DeclareBoolOption{boxes}           % Wrap questions in boxes
 
 % All other options get passed to the article class
 \DeclareDefaultOption{\PassOptionsToClass{\CurrentOption}{article}}
@@ -65,8 +67,8 @@
 % The following internal homework detail macros have default values and do not
 % have to be specified manually.
 \def\@hwname{Homework}
-\def\@problemname{Problem}
-\def\@solutionname{Solution}
+\def\@questionname{Question}
+\def\@answername{Answer}
 \def\@programname{Program}
 
 % The homework title is determined by the course name, homework name, and
@@ -87,14 +89,17 @@
 \def\shorttitle#1{\renewcommand\@shorttitle{#1}}
 % The following just redefine default values and are therefore optional
 \def\hwname#1{\renewcommand\@hwname{#1}}
-\def\solutionname#1{\renewcommand\@solutionname{#1}}
-\def\problemname#1{\renewcommand\@problemname{#1}}
+\def\answername#1{\renewcommand\@answername{#1}}
+\def\questionname#1{\renewcommand\@questionname{#1}}
 \def\programname#1{\renewcommand\@programname{#1}}
 
 
 %%%%%%%%%%%%%%%%%%%
 % Page formatting %
 %%%%%%%%%%%%%%%%%%%
+
+% Load mdframed For framing answers
+\RequirePackage{mdframed}
 
 % Set up page headers and footers using the `fancyhdr' package
 \RequirePackage{fancyhdr}
@@ -164,19 +169,19 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Problem, parts, solution, and claim environments %
+% Question, parts, answer, and claim environments %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Problem environment
+% Question environment
 \ifHW@boxes
   \RequirePackage{framed}
 \fi
 \theoremstyle{definition}
-\newtheorem{@problem}{\sffamily\@problemname}
-\numberwithin{equation}{@problem}
-\numberwithin{table}{@problem}
-\numberwithin{figure}{@problem}
-\newenvironment{problem}[1][]
+\newtheorem{@question}{\sffamily\@questionname}
+\numberwithin{equation}{@question}
+\numberwithin{table}{@question}
+\numberwithin{figure}{@question}
+\newenvironment{question}[1][]
 {
   \ifHW@boxes
     \framed
@@ -184,24 +189,24 @@
   \fi
   \def\@arg{#1}
   \ifx\@arg\empty
-    \@problem
+    \@question
   \else
-    \@problem[\normalfont\@arg\sffamily]
+    \@question[\normalfont\@arg\sffamily]
   \fi
-  \pdfbookmark{\@problemname\ \arabic{@problem}}{\arabic{@problem}}
+  \pdfbookmark{\@questionname\ \arabic{@question}}{\arabic{@question}}
 }
 {
-  \end@problem
-  \ifHW@boxes
+\end@question
+\ifHW@boxes
     \vspace{-1.5ex}
     \endframed
   \fi
 }
 
-% Problems are numbered 1, 2, 3, ... by default
-% If a custom problem number is desired for a particular problem, use the
-% following macro before the problem.
-\def\problemnumber#1{\setcounter{@problem}{#1}\addtocounter{@problem}{-1}}
+% Questions are numbered 1, 2, 3, ... by default
+% If a custom question number is desired for a particular question, use the
+% following macro before the question.
+\def\questionnumber#1{\setcounter{@question}{#1}\addtocounter{@question}{-1}}
 
 % Parts environment
 % By default, parts are labeled by lowercase letters.
@@ -250,17 +255,18 @@
 }
 \def\unresume{\setcounter{enumi}{0}}
 
-% Solution environment
+% Answer environment
 \ifHW@hidesolutions
-  % Hide solutions if the `hidesolutions' class option is enabled
-  \RequirePackage{comment}
-  \excludecomment{solution}
+% Hide answers if the `hidesolutions' class option is enabled
+\RequirePackage{comment}
+\excludecomment{answer}
 \else
   % This is a modification of the `proof' environment from the amsthm package
-  \newenvironment{solution}[1][\@solutionname]
+  \newenvironment{answer}[1][\@answername]
   {
-    \par
-    \ifHW@qed
+  \begin{mdframed}[backgroundcolor = gray!30]
+  \par
+  \ifHW@qed
       \pushQED{\qed}
     \else
       \renewcommand\qedhere{}
@@ -275,32 +281,33 @@
       \popQED
     \fi
     \endtrivlist\@endpefalse
-  }
+    \end{mdframed}
+    }
 \fi
 
 % Fileolution environment for including answer from a file.
 \ifHW@hidesolutions
-  % Hide solutions if the `hidesolutions' class option is enabled
-  \RequirePackage{comment}
-  \excludecomment{filesolution}
+% Hide answers if the `hidesolutions' class option is enabled
+\RequirePackage{comment}
+\excludecomment{fileanswer}
 \else
-  % This is a modification of the `proof' environment from the amsthm package
-  \newenvironment{filesolution}[1][\@solutionname]
-  {
-    \par
-    \normalfont \topsep6\p@\@plus6\p@\relax
-    \trivlist
-    \item[\hskip\labelsep
-      \sffamily\bfseries#1\@addpunct{:}]\ignorespaces
-    \endtrivlist\@endpefalse
-  }
-  {
+% This is a modification of the `proof' environment from the amsthm package
+\newenvironment{fileanswer}[1][\@answername]
+{
+\par
+\normalfont \topsep6\p@\@plus6\p@\relax
+\trivlist
+\item[\hskip\labelsep
+\sffamily\bfseries#1\@addpunct{:}]\ignorespaces
+\endtrivlist\@endpefalse
+}
+{
 
-  }
+}
 \fi
 
-% 'claim' environment for better organization of claims made within a problem
-% solution.
+% 'claim' environment for better organization of claims made within a question
+% answer.
 \def\@defaultclaimname{Claim}
 \newenvironment{claim}[1][\@defaultclaimname]{
     \begin{quote}
@@ -319,7 +326,7 @@
 \newclaim{remark}{Remark}
 
 % The 'proof' environment is re-defined to serve as a proof environment for
-% claims made within a problem
+% claims made within a question
 \let\proof\@undefined
 \let\endproof\@undefined
 \newclaim{proof}{Proof}
